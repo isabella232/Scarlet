@@ -35,8 +35,6 @@ allprojects {
 }
 
 subprojects { project ->
-    apply plugin: 'maven-publish'
-
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = "1.8"
@@ -54,11 +52,8 @@ subprojects { project ->
         }
     }
 
-    publishing {
-        publications {
-            release(MavenPublication) {
-            }
-        }
+    tasks.withType(Javadoc) {
+        failOnError false
     }
 }
 
