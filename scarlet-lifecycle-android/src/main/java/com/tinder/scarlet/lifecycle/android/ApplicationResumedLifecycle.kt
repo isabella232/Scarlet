@@ -17,13 +17,14 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import java.util.concurrent.TimeUnit
 
 internal class ApplicationResumedLifecycle(
     application: Application,
     private val lifecycleRegistry: LifecycleRegistry
 ) : Lifecycle by lifecycleRegistry {
     private val job = SupervisorJob()
-    private var scope = CoroutineScope(job + Dispatchers.IO)
+    private var scope = CoroutineScope(job + Dispatchers.Default)
 
     init {
         application.registerActivityLifecycleCallbacks(ActivityLifecycleCallbacks())
@@ -37,12 +38,10 @@ internal class ApplicationResumedLifecycle(
             isResumed = false
 
             job = scope.launch {
-                supervisorScope {
-                    delay(30000)
-                    if (!isResumed) {
-                        lifecycleRegistry.onNext(Lifecycle.State.Stopped.WithReason(ShutdownReason(1000, "App is paused")))
-                        job = null
-                    }
+                delay(TimeUnit.SECONDS.toMillis(30))
+                if (!isResumed) {
+                    lifecycleRegistry.onNext(Lifecycle.State.Stopped.WithReason(ShutdownReason(1000, "App is paused")))
+                    job = null
                 }
             }
         }
