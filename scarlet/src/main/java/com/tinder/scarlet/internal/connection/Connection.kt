@@ -201,6 +201,7 @@ internal class Connection(
             when (state) {
                 is Lifecycle.State.Stopped.WithReason -> session.webSocket.close(state.shutdownReason)
                 Lifecycle.State.Stopped.AndAborted -> session.webSocket.cancel()
+                else -> {}
             }
         }
 
