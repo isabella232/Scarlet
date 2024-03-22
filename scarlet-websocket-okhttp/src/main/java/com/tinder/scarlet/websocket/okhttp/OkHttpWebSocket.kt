@@ -50,6 +50,7 @@ class OkHttpWebSocket internal constructor(
                 okHttpWebSocketHolder.initiate(event.webSocket as okhttp3.WebSocket)
             is WebSocket.Event.OnConnectionClosing -> close(ShutdownReason.GRACEFUL)
             is WebSocket.Event.OnConnectionClosed, is WebSocket.Event.OnConnectionFailed -> handleConnectionShutdown()
+            else -> {}
         }
     }
 
